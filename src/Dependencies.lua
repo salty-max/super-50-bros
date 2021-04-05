@@ -11,13 +11,9 @@ Push = require 'lib/push'
 Class = require 'lib/class'
 Timer = require 'lib/knife.timer'
 
--- constants
+-- utilities
 require 'src/constants'
-
--- utils
 require 'src/Util'
-
--- state machine
 require 'src/StateMachine'
 
 -- states
@@ -35,31 +31,30 @@ gSounds = {
 }
 
 gTextures = {
-    ['backgrounds'] = love.graphics.newImage('graphics/backgrounds.png'),
-    ['blue_alien'] = love.graphics.newImage('graphics/blue_alien.png'),
-    ['bushes_and_cacti'] = love.graphics.newImage('graphics/bushes_and_cacti.png'),
-    ['buttons'] = love.graphics.newImage('graphics/buttons.png'),
-    ['coins_and_bombs'] = love.graphics.newImage('graphics/coins_and_bombs.png'),
-    ['crates_and_blocks'] = love.graphics.newImage('graphics/crates_and_blocks.png'),
-    ['creatures'] = love.graphics.newImage('graphics/creatures.png'),
-    ['doors_and_windows'] = love.graphics.newImage('graphics/doors_and_windows.png'),
-    ['faces_and_hills'] = love.graphics.newImage('graphics/faces_and_hills.png'),
-    ['fireballs'] = love.graphics.newImage('graphics/fireballs.png'),
-    ['flags'] = love.graphics.newImage('graphics/flags.png'),
+    ['tiles'] = love.graphics.newImage('graphics/tiles.png'),
+    ['toppers'] = love.graphics.newImage('graphics/tile_tops.png'),
+    ['bushes'] = love.graphics.newImage('graphics/bushes_and_cacti.png'),
+    ['jump-blocks'] = love.graphics.newImage('graphics/jump_blocks.png'),
     ['gems'] = love.graphics.newImage('graphics/gems.png'),
-    ['green_alien'] = love.graphics.newImage('graphics/green_alien.png'),
-    ['hearts'] = love.graphics.newImage('graphics/hearts.png'),
-    ['jump_blocks'] = love.graphics.newImage('graphics/jump_blocks.png'),
-    ['keys_and_locks'] = love.graphics.newImage('graphics/keys_and_locks.png'),
-    ['ladder_and_signs'] = love.graphics.newImage('graphics/ladder_and_signs.png'),
-    ['mushrooms'] = love.graphics.newImage('graphics/mushrooms.png'),
-    ['numbers'] = love.graphics.newImage('graphics/numbers.png')
+    ['backgrounds'] = love.graphics.newImage('graphics/backgrounds.png'),
+    ['green-alien'] = love.graphics.newImage('graphics/green_alien.png'),
+    ['creatures'] = love.graphics.newImage('graphics/creatures.png')
 }
 
-gFrames = {}
+gFrames = {
+    ['tiles'] = GenerateQuads(gTextures['tiles'], TILE_SIZE, TILE_SIZE),
+    ['green-alien'] = GenerateQuads(gTextures['green-alien'], PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT),
+}
+
+gFrames['tilesets'] = GenerateTileSets(
+    gFrames['tiles'],
+    TILE_SETS_WIDE, TILE_SETS_TALL,
+    TILE_SET_WIDTH, TILE_SET_HEIGHT
+)
 
 gFonts = {
     ['small'] = love.graphics.newFont('fonts/font.ttf', 8),
     ['medium'] = love.graphics.newFont('fonts/font.ttf', 16),
-    ['large'] = love.graphics.newFont('fonts/font.ttf', 32)
+    ['large'] = love.graphics.newFont('fonts/font.ttf', 32),
+    ['title'] = love.graphics.newFont('fonts/ArcadeAlternate.ttf', 32)
 }
