@@ -9,20 +9,20 @@
 Entity = Class{}
 
 function Entity:init(def)
-  self.x = def.x
-  self.y = def.y
+    self.x = def.x
+    self.y = def.y
 
-  self.dx = 0
-  self.dy = 0
+    self.dx = 0
+    self.dy = 0
 
-  self.texture = def.texture
+    self.texture = def.texture
 
-  self.stateMachine = def.stateMachine
+    self.stateMachine = def.stateMachine
 
-  self.direction = 'right'
+    self.direction = 'right'
 
-  self.width = def.width
-  self.height = def.height
+    self.width = def.width
+    self.height = def.height
 end
 
 function Entity:changeState(state, params)
