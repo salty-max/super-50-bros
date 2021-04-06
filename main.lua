@@ -23,8 +23,17 @@ function love.load()
 
     tiles = {}
 
-    characterX = VIRTUAL_WIDTH / 2 - (PLAYER_SPRITE_WIDTH / 2)
-    characterY = ((7 - 1) * TILE_SIZE) - PLAYER_SPRITE_HEIGHT
+    player = Player ({
+        x = VIRTUAL_WIDTH / 2 - (PLAYER_SPRITE_WIDTH / 2),
+        y = ((7 - 1) * TILE_SIZE) - PLAYER_SPRITE_HEIGHT,
+        width = PLAYER_SPRITE_WIDTH, height = PLAYER_SPRITE_HEIGHT,
+        texture = 'green-alien',
+        stateMachine = StateMachine {
+            ['idle'] = function() return PlayerIdleState(player) end,
+            ['walking'] = function() return PlayerWalkingState(player) end
+        }
+    })
+    player:changeState('idle')
 
     mapWidth = 20
     mapHeight = 20
@@ -61,13 +70,9 @@ function love.keyboard.wasPressed(key)
 end
 
 function love.update(dt)
-    if love.keyboard.isDown('left') then
-        characterX = math.max(0, characterX - PLAYER_WALK_SPEED * dt)
-    elseif love.keyboard.isDown('right') then
-        characterX = characterX + PLAYER_WALK_SPEED * dt
-    end
+    player:update(dt)
 
-    cameraScroll = -math.floor(characterX - (VIRTUAL_WIDTH / 2) + (PLAYER_SPRITE_WIDTH / 2))
+    cameraScroll = -math.floor(player.x - (VIRTUAL_WIDTH / 2) + (PLAYER_SPRITE_WIDTH / 2))
 
     love.keyboard.keysPressed = {}
 end
@@ -88,7 +93,7 @@ function love.draw()
         end
     end
 
-    love.graphics.draw(gTextures['green-alien'], gFrames['green-alien'][1], math.floor(characterX), math.floor(characterY))
+    player:render()
 
     Push:finish()
 end

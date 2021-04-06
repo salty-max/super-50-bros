@@ -15,9 +15,16 @@ Timer = require 'lib/knife.timer'
 require 'src/constants'
 require 'src/Util'
 require 'src/StateMachine'
+require 'src/Animation'
 
 -- states
 require 'src/states/BaseState'
+require 'src/states/entity/PlayerIdleState'
+require 'src/states/entity/PlayerWalkingState'
+
+--entities
+require 'src/Entity'
+require 'src/Player'
 
 gSounds = {
     ['music'] = love.audio.newSource('sounds/music.wav', 'static'),
