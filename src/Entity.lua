@@ -46,6 +46,4 @@ function Entity:render()
         0, self.direction == 'right' and 1 or -1, 1,
         self.width / 2, self.height / 2
     )
-
-    love.graphics.print(self.currentAnimation:getCurrentFrame(), 5, 5)
 end

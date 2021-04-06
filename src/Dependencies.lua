@@ -19,6 +19,7 @@ require 'src/Animation'
 
 -- states
 require 'src/states/BaseState'
+require 'src/states/game/PlayState'
 require 'src/states/entity/PlayerIdleState'
 require 'src/states/entity/PlayerWalkingState'
 
@@ -51,6 +52,7 @@ gTextures = {
 gFrames = {
     ['tiles'] = GenerateQuads(gTextures['tiles'], TILE_SIZE, TILE_SIZE),
     ['green-alien'] = GenerateQuads(gTextures['green-alien'], PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT),
+    ['backgrounds'] = GenerateQuads(gTextures['backgrounds'], 256, 128)
 }
 
 gFrames['tilesets'] = GenerateTileSets(

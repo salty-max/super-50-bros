@@ -21,38 +21,10 @@ function love.load()
         vsync = true
     })
 
-    tiles = {}
-
-    player = Player ({
-        x = VIRTUAL_WIDTH / 2 - (PLAYER_SPRITE_WIDTH / 2),
-        y = ((7 - 1) * TILE_SIZE) - PLAYER_SPRITE_HEIGHT,
-        width = PLAYER_SPRITE_WIDTH, height = PLAYER_SPRITE_HEIGHT,
-        texture = 'green-alien',
-        stateMachine = StateMachine {
-            ['idle'] = function() return PlayerIdleState(player) end,
-            ['walking'] = function() return PlayerWalkingState(player) end
-        }
-    })
-    player:changeState('idle')
-
-    mapWidth = 20
-    mapHeight = 20
-
-    cameraScroll = 0
-
-    backgroundR = math.random()
-    backgroundG = math.random()
-    backgroundB = math.random()
-
-    for y = 1, mapHeight do
-        table.insert(tiles, {})
-
-        for x = 1, mapWidth do
-            table.insert(tiles[y], {
-                id = y < 7 and TILE_ID_EMPTY or TILE_ID_GROUND
-            })
-        end
-    end
+    gStateMachine = StateMachine {
+        ['play'] = function() return PlayState() end
+    }
+    gStateMachine:change('play')
 
     love.keyboard.keysPressed = {}
 end
@@ -70,9 +42,7 @@ function love.keyboard.wasPressed(key)
 end
 
 function love.update(dt)
-    player:update(dt)
-
-    cameraScroll = -math.floor(player.x - (VIRTUAL_WIDTH / 2) + (PLAYER_SPRITE_WIDTH / 2))
+    gStateMachine:update(dt)
 
     love.keyboard.keysPressed = {}
 end
@@ -80,20 +50,7 @@ end
 function love.draw()
     Push:start()
 
-    love.graphics.clear(backgroundR, backgroundG, backgroundB, 1)
-
-    love.graphics.translate(cameraScroll, 0)
-
-    for y = 1, mapHeight do
-        for x = 1, mapWidth do
-            local tile = tiles[y][x]
-            if tile.id == TILE_ID_GROUND then
-                love.graphics.draw(gTextures['tiles'], gFrames['tiles'][6], (x - 1) * TILE_SIZE, (y - 1) * TILE_SIZE)
-            end
-        end
-    end
-
-    player:render()
+    gStateMachine:render()
 
     Push:finish()
 end
