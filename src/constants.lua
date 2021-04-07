@@ -50,17 +50,32 @@ PLAYER_SPRITE_HEIGHT = 20
 -- player walking speed
 PLAYER_WALK_SPEED = 60
 
+GRAVITY = 6
+
 -- player jumping velocity
-PLAYER_JUMP_VELOCITY = -150
+PLAYER_JUMP_VELOCITY = -175
 
 -- snail movement speed
 SNAIL_MOVE_SPEED = 10
+SNAIL_SPAWN_CHANCE = 20
 
 --
 -- tile IDs
 --
-TILE_ID_EMPTY = 1
-TILE_ID_GROUND = 2
+TILE_ID_EMPTY = 5
+TILE_ID_GROUND = 3
+
+PILLAR_CHANCE = 8
+CHASM_CHANCE = 7
+BLOCK_CHANCE = 10
+GEM_CHANCE = 5
+
+-- table of player's skins
+PLAYER_SKINS = {
+    'green-alien',
+    'blue-alien',
+    'pink-alien'
+}
 
 -- table of tiles that should trigger a collision
 COLLIDABLE_TILES = {

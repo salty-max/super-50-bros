@@ -12,6 +12,9 @@ function Entity:init(def)
     self.x = def.x
     self.y = def.y
 
+    self.width = def.width
+    self.height = def.height
+
     self.dx = 0
     self.dy = 0
 
@@ -21,8 +24,11 @@ function Entity:init(def)
 
     self.direction = 'right'
 
-    self.width = def.width
-    self.height = def.height
+    -- reference to tile map so we can check collisions
+    self.map = def.map
+
+    -- reference to level for tests against other entities + objects
+    self.level = def.level
 end
 
 function Entity:changeState(state, params)

@@ -14,7 +14,7 @@ function GenerateQuads(atlas, tileWidth, tileHeight)
 
     for y = 0, sheetHeight - 1 do
         for x = 0, sheetWidth - 1 do
-            spritesheet[sheetCounter] = love.graphics.newQuad(x * tileWidth, y * tileWidth, tileWidth, tileHeight, atlas:getDimensions())
+            spritesheet[sheetCounter] = love.graphics.newQuad(x * tileWidth, y * tileHeight, tileWidth, tileHeight, atlas:getDimensions())
             sheetCounter = sheetCounter + 1
         end
     end
@@ -23,7 +23,7 @@ function GenerateQuads(atlas, tileWidth, tileHeight)
 end
 
 --[[
-    Divides quads we've generated via slicing our tile sheet into separate tile sets.
+    Divides quads generated via slicing the tile sheet into separate tile sets.
 ]]
 function GenerateTileSets(quads, setsX, setsY, sizeX, sizeY)
     local tilesets = {}
