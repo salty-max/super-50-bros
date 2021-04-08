@@ -13,9 +13,17 @@ function StartState:init()
     self.background = math.random(3)
 end
 
+function StartState:enter(params)
+    self.score = params.score
+    self.levelId = params.levelId
+end
+
 function StartState:update(dt)
     if love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        gStateMachine:change('play')
+        gStateMachine:change('play', {
+            score = self.score,
+            levelId = self.levelId
+        })
     end
 end
 

@@ -10,7 +10,8 @@ Player = Class{__includes = Entity}
 
 function Player:init(def)
     Entity.init(self, def)
-    self.score = 0
+    self.score = def.score
+    self.hasKey = false
 end
 
 function Player:checkLeftCollisions(dt)
@@ -64,6 +65,8 @@ function Player:checkObjectCollisions()
         if object:collides(self) then
             if object.solid then
                 table.insert(collidedObjects, object)
+            elseif object.interactive then
+                object.onInteract(self, object)
             elseif object.consumable then
                 object.onConsume(self)
                 table.remove(self.level.objects, k)

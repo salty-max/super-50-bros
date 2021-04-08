@@ -17,8 +17,15 @@ function PlayState:init()
 
     self.tileset = math.random(#gFrames['tilesets'])
     self.topperset = math.random(#gFrames['toppersets'])
+end
 
-    self.level = LevelMaker.generate(100, 20)
+function PlayState:enter(params)
+    self.score = params.score
+    self.levelId = params.levelId
+
+    -- each level is twice as wide as the previous one
+    self.level = LevelMaker.generate(self.levelId * 100, 20)
+    self.level.id = self.levelId
     self.tilemap = self.level.tilemap
 
     self.player = Player ({
@@ -33,7 +40,8 @@ function PlayState:init()
             ['falling'] = function() return PlayerFallingState(self.player, GRAVITY) end
         },
         level = self.level,
-        map = self.level.tilemap
+        map = self.level.tilemap,
+        score = self.score,
     })
     self.player:changeState('falling')
 
@@ -82,6 +90,18 @@ function PlayState:render()
     love.graphics.print(tostring(self.player.score), 5, 5)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print(tostring(self.player.score), 4, 4)
+
+    -- render level
+    love.graphics.setFont(gFonts['small'])
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.printf('Level ' .. tostring(self.level.id), 1, 5, VIRTUAL_WIDTH, 'center')
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.printf('Level ' .. tostring(self.level.id), 0, 4, VIRTUAL_WIDTH, 'center')
+
+    -- render if player has key or not
+    if self.player.hasKey then
+        love.graphics.draw(gTextures['key'], 5, 16, 0, 2, 2)
+    end
 end
 
 function PlayState:updateCamera()

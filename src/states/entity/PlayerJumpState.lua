@@ -60,13 +60,15 @@ function PlayerJumpState:update(dt)
     for k, object in pairs(self.player.level.objects) do
         if object:collides(self.player) then
             if object.solid then
-                object.onCollide(object)
+                object.onCollide(self.player, object)
 
                 self.player.y = object.y + object.height
                 self.player.dy = 0
                 self.player:changeState('falling')
+            elseif object.interactive then
+                object.onInteract(self.player, object)
             elseif object.consumable then
-                object.onConsume(self.player)
+                object.onConsume(self.player, object)
                 table.remove(self.player.level.objects, k)
             end
         end
@@ -75,7 +77,10 @@ function PlayerJumpState:update(dt)
     for k, entity in pairs(self.player.level.entities) do
         if entity:collides(self.player) then
             gSounds['death']:play()
-            gStateMachine:change('start')
+            gStateMachine:change('start', {
+                score = 0,
+                levelId = 1
+            })
         end
     end
 end

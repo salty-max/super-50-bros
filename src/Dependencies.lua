@@ -47,7 +47,9 @@ gSounds = {
     ['kill2']           = love.audio.newSource('sounds/kill2.wav', 'static'),
     ['pickup']          = love.audio.newSource('sounds/pickup.wav', 'static'),
     ['powerup-reveal']  = love.audio.newSource('sounds/powerup-reveal.wav', 'static'),
-    ['empty-block']     = love.audio.newSource('sounds/empty-block.wav', 'static')
+    ['empty-block']     = love.audio.newSource('sounds/empty-block.wav', 'static'),
+    ['unlock']          = love.audio.newSource('sounds/unlock.wav', 'static'),
+    ['raise-flag']      = love.audio.newSource('sounds/raise-flag.wav', 'static'),
 }
 
 gFonts = {
@@ -67,7 +69,10 @@ gTextures = {
     ['green-alien']     = love.graphics.newImage('graphics/green_alien.png'),
     ['blue-alien']      = love.graphics.newImage('graphics/blue_alien.png'),
     ['pink-alien']      = love.graphics.newImage('graphics/pink_alien.png'),
-    ['creatures']       = love.graphics.newImage('graphics/creatures.png')
+    ['creatures']       = love.graphics.newImage('graphics/creatures.png'),
+    ['keys-locks']      = love.graphics.newImage('graphics/keys_and_locks.png'),
+    ['flags']           = love.graphics.newImage('graphics/flags.png'),
+    ['key']             = love.graphics.newImage('graphics/key.png'),
 }
 
 gFrames = {
@@ -80,8 +85,13 @@ gFrames = {
     ['green-alien']     = GenerateQuads(gTextures['green-alien'], PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT),
     ['blue-alien']      = GenerateQuads(gTextures['blue-alien'], PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT),
     ['pink-alien']      = GenerateQuads(gTextures['pink-alien'], PLAYER_SPRITE_WIDTH, PLAYER_SPRITE_HEIGHT),
-    ['creatures']       = GenerateQuads(gTextures['creatures'], 16, 16),
+    ['creatures']       = GenerateQuads(gTextures['creatures'], TILE_SIZE, TILE_SIZE),
+    ['keys-locks']      = GenerateQuads(gTextures['keys-locks'], TILE_SIZE, TILE_SIZE),
+    ['flags']           = GenerateFlagsQuads(gTextures['flags'])
 }
+
+gFrames['keys'] = GenerateKeysQuads(gFrames['keys-locks'])
+gFrames['locks'] = GenerateKeysQuads(gFrames['keys-locks'])
 
 gFrames['tilesets'] = GenerateTileSets(
     gFrames['tiles'],

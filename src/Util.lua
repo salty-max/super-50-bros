@@ -50,6 +50,41 @@ function GenerateTileSets(quads, setsX, setsY, sizeX, sizeY)
     return tilesets
 end
 
+function GenerateKeysQuads(quads)
+    return table.slice(quads, 1, 4)
+end
+function GenerateLocksQuads(quads)
+    return table.slice(quads, 5, #quads)
+end
+
+function GenerateFlagsQuads(atlas)
+    local sheet = {}
+    local sheetCounter = 1
+    local x = 32
+    local y = 0
+
+    for row = 1, 4 do
+        for col = 1, 5 do
+            table.insert(sheet, love.graphics.newQuad(x, y, TILE_SIZE, TILE_SIZE, atlas:getDimensions()))
+            sheetCounter = sheetCounter + 1
+            x = x + TILE_SIZE
+        end
+        y = y + TILE_SIZE
+        x = 32
+    end
+
+    return sheet
+end
+
+function table.slice(tbl, first, last, step)
+    local sliced = {}
+    for i = first or 1, last or #tbl, step or 1 do
+        table.insert(sliced, tbl[i])
+    end
+
+    return sliced
+end
+
 --[[
     Recursive table printing function.
     https://coronalabs.com/blog/2014/09/02/tutorial-printing-table-contents/

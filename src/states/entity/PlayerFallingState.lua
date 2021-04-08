@@ -39,7 +39,10 @@ function PlayerFallingState:update(dt)
         self.player.y = (tileBottomLeft.y - 1) * TILE_SIZE - self.player.height
     elseif self.player.y > VIRTUAL_HEIGHT then
         gSounds['death']:play()
-        gStateMachine:change('start')
+        gStateMachine:change('start', {
+            score = 0,
+            levelId = 1
+        })
     elseif love.keyboard.isDown('left') then
         self.player.direction = 'left'
         self.player.x = self.player.x - PLAYER_WALK_SPEED * dt
@@ -62,8 +65,10 @@ function PlayerFallingState:update(dt)
                 else
                     self.player:changeState('idle')
                 end
+            elseif object.interactive then
+                object.onInteract(self.player, object)
             elseif object.consumable then
-                object.onConsume(self.player)
+                object.onConsume(self.player, object)
                 table.remove(self.player.level.objects, k)
             end
         end
@@ -71,6 +76,7 @@ function PlayerFallingState:update(dt)
 
     for k, entity in pairs(self.player.level.entities) do
         if entity:collides(self.player) then
+            gSounds['kill']:play()
             self.player.dy = -50 + GRAVITY
             self.player.score = self.player.score + 100
             table.remove(self.player.level.entities, k)

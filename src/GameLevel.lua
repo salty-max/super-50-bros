@@ -12,6 +12,7 @@ function GameLevel:init(entities, objects, tilemap)
   self.entities = entities
   self.objects = objects
   self.tilemap = tilemap
+  self.id = 0
 end
 
 --[[

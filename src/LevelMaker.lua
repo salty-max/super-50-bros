@@ -16,6 +16,10 @@ function LevelMaker.generate(width, height)
     local tileset = math.random(#gFrames['tilesets'])
     local topperset = math.random(#gFrames['toppersets'])
 
+    local keySpawned = false
+    local lockSpawned = false
+    local keyLockColor = math.random(4)
+
     -- create 2D array filled with emptyness
     for y = 1, height do
         table.insert(tiles, {})
@@ -36,13 +40,13 @@ function LevelMaker.generate(width, height)
         local tileId = TILE_ID_EMPTY
         -- y at which could be an jump block
         local blockHeight = 4
-
-        if math.random(CHASM_CHANCE) == 1 then
+        -- first tile and last 3 ones are always ground; so don't generate chasm on those
+        if math.random(CHASM_CHANCE) == 1 and not (col == 1 or col >= width - 3) then
             for ground = 7, height do
                 tiles[ground][col] = Tile(
                     col, ground,
-                    col == 1 and TILE_ID_GROUND or tileId,
-                    col == 1 and ground == 7,
+                    tileId,
+                    nil,
                     tileset, topperset
                 )
             end
@@ -57,7 +61,9 @@ function LevelMaker.generate(width, height)
             -- random chance for a pillar
             local spawnPillar = math.random(PILLAR_CHANCE) == 1
 
-            if spawnPillar then
+            -- don't spawn pillars at the end of the level; leave room for
+            -- the flag
+            if spawnPillar and col < width - 3 then
                 blockHeight = 2
 
                 -- chance to generate a bush on top of the pillar
@@ -93,7 +99,7 @@ function LevelMaker.generate(width, height)
             end
 
             -- chance to generate jump block
-            if math.random(BLOCK_CHANCE) == 1 then
+            if math.random(BLOCK_CHANCE) == 1 and col < width - 3 then
                 table.insert(objects, GameObject {
                     texture = 'jump-blocks',
                     x = (col - 1) * TILE_SIZE,
@@ -140,6 +146,85 @@ function LevelMaker.generate(width, height)
                         gSounds['empty-block']:play()
                     end
                 })
+            -- spawn key at the middle of the level
+            elseif not keySpawned and col >= width / 2  then
+                table.insert(objects, GameObject {
+                    texture = 'keys-locks',
+                    x = (col - 1) * TILE_SIZE,
+                    y = (blockHeight - 1) * TILE_SIZE,
+                    width = 16,
+                    height = 16,
+                    frame = keyLockColor,
+                    collidable = true,
+                    consumable = true,
+                    solid = false,
+                    onConsume = function(player, object)
+                        gSounds['pickup']:play()
+                        player.hasKey = true
+                    end
+                })
+
+                keySpawned = true
+            -- spawn lock at 2/3 of the level
+            elseif not lockSpawned and col >= width - width / 3  then
+                table.insert(objects, GameObject {
+                    texture = 'keys-locks',
+                    x = (col - 1) * TILE_SIZE,
+                    y = (blockHeight - 1) * TILE_SIZE,
+                    width = 16,
+                    height = 16,
+                    frame = keyLockColor + 4, -- 4 is the sheet width and lock blocks are on the second row of the sheet
+                    collidable = true,
+                    solid = true,
+                    onCollide = function(player, object)
+                        if not object.hit then
+                            if player.hasKey then
+                                gSounds['unlock']:play()
+                                -- spawn flag (non collidable to avoid wierd behavior in case of double collision with pole)
+                                local flag = GameObject {
+                                    texture = 'flags',
+                                    x = (width - 2) * TILE_SIZE + TILE_SIZE / 2,
+                                    y = (3 * TILE_SIZE) + TILE_SIZE / 2,
+                                    width = 16,
+                                    height = 16,
+                                    frame = keyLockColor * 5,
+                                    collidable = false
+                                }
+
+                                -- spawn flag's pole sprites (interactives on hit)
+                                for i = 3, 1, -1 do
+                                    table.insert(objects, GameObject {
+                                        texture = 'flags',
+                                        x = (width - 2) * TILE_SIZE,
+                                        y = ((4 + i - 1) - 1) * TILE_SIZE,
+                                        width = 16,
+                                        height = 16,
+                                        frame = keyLockColor + (5 * (i - 1)),
+                                        collidable = true,
+                                        interactive = true,
+                                        solid = false,
+                                        -- go to next level on collide
+                                        onInteract = function(player, obj)
+                                            gSounds['raise-flag']:play()
+                                             gStateMachine:change('start', {
+                                                score = player.score,
+                                                levelId = player.level.id + 1
+                                            })
+                                        end
+                                    })
+                                end
+
+                                table.insert(objects, flag)
+                                player.hasKey = false
+                                object.hit = true
+                            else
+                                gSounds['empty-block']:play()
+                            end
+                        end
+                    end
+                })
+
+                lockSpawned = true
             end
         end
     end
